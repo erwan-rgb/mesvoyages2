@@ -34,6 +34,11 @@ class Visite
 
     #[ORM\Column(nullable: true)]
     private ?int $tempmax = null;
+    
+     public function __construct()
+    {
+        $this->datecreation = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -132,4 +137,5 @@ class Visite
             return $this->datecreation->format('d/m/Y');
         }
     }
+    
 }
