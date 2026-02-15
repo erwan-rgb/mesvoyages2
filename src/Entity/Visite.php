@@ -3,20 +3,23 @@
 namespace App\Entity;
 
 use App\Repository\VisiteRepository;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
 #[ORM\Entity(repositoryClass: VisiteRepository::class)]
 #[Vich\Uploadable]
 class Visite
 {
+   
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -32,7 +35,7 @@ class Visite
     private ?int $imageSize = null;
       
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
     
     #[Assert\Callback] 
     public function validate(ExecutionContextInterface $context){
@@ -60,9 +63,10 @@ class Visite
     private ?string $pays = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTime $datecreation = null;
+    private ?DateTime $datecreation = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Range(min: 0, max: 20, notInRangeMessage: 'La note doit être comprise entre 0 et 20.')]
     private ?int $note = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -72,6 +76,7 @@ class Visite
     private ?int $tempmin = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\GreaterThan(propertyPath:'tempmin')]
     private ?int $tempmax = null;
 
     /**
@@ -82,7 +87,7 @@ class Visite
     
      public function __construct()
     {
-        $this->datecreation = new \DateTime();
+        $this->datecreation = new DateTime();
         $this->environnements = new ArrayCollection();
     }
 
@@ -115,12 +120,12 @@ class Visite
         return $this;
     }
 
-    public function getDatecreation(): ?\DateTime
+    public function getDatecreation(): ?DateTime
     {
         return $this->datecreation;
     }
 
-    public function setDatecreation(?\DateTime $datecreation): static
+    public function setDatecreation(?DateTime $datecreation): static
     {
         $this->datecreation = $datecreation;
 
@@ -223,7 +228,7 @@ class Visite
      public function setImageFile(?File $imageFile): void {
          $this->imageFile = $imageFile;
          if(null !== $imageFile){
-             $this->updatedAt = new \DateTimeImmutable();
+             $this->updatedAt = new DateTimeImmutable();
          }
      }
 

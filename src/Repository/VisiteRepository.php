@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Visite;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -91,5 +92,22 @@ class VisiteRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($visite);
         $this->getEntityManager()->flush();
     }
+    
+   public function findAllLasted($nb): array{
+       return $this->createQueryBuilder('v') // alias de la table
+               ->orderBy('v.datecreation','DESC')
+               ->setMaxResults($nb)
+               ->getQuery()
+               ->getResult();
+   }
+   
+   public function newVisite(): Visite{
+       $visite = (new Visite())
+               ->setVille("New York")
+               ->setPays("USA")
+               ->setDatecreation(new DateTime("now"));
+       return $visite;
+   }
+   
    
 }
